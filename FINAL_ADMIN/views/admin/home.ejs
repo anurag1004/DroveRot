@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Rover</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!--Custom stylesheets-->
+    <link rel="stylesheet" type="text/css" href="/stylesheets/home.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://unpkg.com/popper.js@1.12.6/dist/umd/popper.js" integrity="sha384-fA23ZRQ3G/J53mElWqVJEGJzU0sTs+SvzG8fXVWP+kJQ1lwFAOkcUOysnlKJC33U" crossorigin="anonymous"></script>
+    <!-- Font Awesome -->
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
+<!-- Bootstrap core CSS -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+<!-- Material Design Bootstrap -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.10.1/css/mdb.min.css" rel="stylesheet">
+<!--Google fonts-->
+<link href="https://fonts.googleapis.com/css?family=Cute+Font&display=swap" rel="stylesheet">
+<style>
+     
+</style>
+</head>
+    <body>
+        <ul class="nav nav-tabs fixed-top bg-dark">
+            <%if(currentUser){%>
+                   <li class="nav-item">
+                    <a class="nav-link active" href="/">Admin Panel</a>
+                     </li>
+               <li class="nav-item">
+                 <a class="nav-link" href="/logout">LogOut</a>
+               </li>
+               <%}else{%>
+                   <li class="nav-item">
+                       <a class="nav-link" href="/login">Login</a>
+                     </li>
+                   <li class="nav-item">
+                      <a class="nav-link" href="/register">Register</a>
+                 </li>
+               <%}%>
+           </ul>
+        <div class="container mt-5">
+            <div class="heading" style="text-align: center;">
+                <h1 id='head'class="px-3">SERVICE BEFORE SELF</h1>
+                <img src="https://cdn.telanganatoday.com/wp-content/uploads/2017/06/Indian-Army.jpeg" width="120px" height="100px">
+            </div>
+                <div id='wrap'class="container">
+                    <div class="row justify-content-center">
+                        <div class="col"></div>
+                        <div class="col">
+                         <a href="/trainmode" id='train'class="btn btn-warning"style="color: black;text-decoration: none;">Train Model</a>
+                        </div>
+                        <div class="col"></div>
+                    </div>
+                    <div class="row justify-content-center">
+                        <div class="col"></div>
+                        <div class="col">
+                       <a href="/workingmode"  id='working'class="btn btn-light" style="color: black;text-decoration: none;">Working Model</a>
+                        </div>
+                        <div class="col"></div>
+                    </div>
+                </div>
+        </div>
+    </div>
+    
+  
+   <!-- JQuery -->
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<!-- Bootstrap tooltips -->
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.4/umd/popper.min.js"></script>
+<!-- Bootstrap core JavaScript -->
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
+<!-- MDB core JavaScript -->
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.10.1/js/mdb.min.js"></script>
+<script>
+    $(document).ready(()=>{
+        // $('#train').on('click',(e)=>{
+        //     location.href = window.location.href + 'trainmode';
+        //  });
+        // $('#working').on('click',(e)=>{
+        //     location.href = window.location.href + 'workingmode';
+        // });
+    });
+
+</script>
+</body>
+</html>

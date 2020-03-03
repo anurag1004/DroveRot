@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FILES</title>
+    </head>
+    <body>
+        <form action="/upload/photo" enctype="multipart/form-data" method="POST">
+            <input type="file" name="myImage" accept="image/*">
+            <input type="submit" value="Upload Photo">
+        </form>
+        <form action="/upload/base64"  method="POST">
+            <input type="text" name="base64Img">
+            <button type="submit">Send</button>
+        </form>
+    </body>
+</html>

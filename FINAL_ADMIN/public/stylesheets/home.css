@@ -1,0 +1,19 @@
+html{
+    min-height: 100%;
+}
+body{
+    min-height: 100%;
+    background-color: black!important;
+    background-size: cover!important;
+    background-repeat: no-repeat!important;
+    background: #348F50;
+    background: -webkit-linear-gradient(to bottom, #56B4D3, #348F50);
+    background: linear-gradient(to bottom, #56B4D3, #348F50);
+}
+#head{
+    font-family: 'Cute Font', cursive;
+    font-size: 3.7em;
+}
+#wrap{
+    margin-top: 10%;
+}

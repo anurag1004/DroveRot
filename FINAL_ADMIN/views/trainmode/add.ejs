@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Rover</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!--Custom stylesheets-->
+    <link rel="stylesheet" type="text/css" href="/stylesheets/home.css">
+    <link rel="stylesheet" type="text/css" href="/stylesheets/add_sol.css">
+    
+    <!--socket.io-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.1/socket.io.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://unpkg.com/popper.js@1.12.6/dist/umd/popper.js" integrity="sha384-fA23ZRQ3G/J53mElWqVJEGJzU0sTs+SvzG8fXVWP+kJQ1lwFAOkcUOysnlKJC33U" crossorigin="anonymous"></script>
+    <!-- Font Awesome -->
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
+<!-- Bootstrap core CSS -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+<!-- Material Design Bootstrap -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.10.1/css/mdb.min.css" rel="stylesheet">
+<!--Google fonts-->
+<link href="https://fonts.googleapis.com/css?family=Cute+Font&display=swap" rel="stylesheet">
+</head>
+    <body>
+        <ul class="nav nav-tabs fixed-top bg-dark">
+            <%if(currentUser){%>
+                   <li class="nav-item">
+                    <a class="nav-link active" href="/">Admin Panel</a>
+                     </li>
+               <li class="nav-item">
+                 <a class="nav-link" href="/logout">LogOut</a>
+               </li>
+               <%}else{%>
+                   <li class="nav-item">
+                       <a class="nav-link" href="/login">Login</a>
+                     </li>
+                   <li class="nav-item">
+                      <a class="nav-link" href="/register">Register</a>
+                 </li>
+               <%}%>
+           </ul>
+        <div class="container mt-5">
+            <div class="heading" style="text-align: center;">
+                <h1 id='head'class="px-3" style="color: white;">ADD SOLDIER</h1>
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/99/ADGPI_Indian_Army.svg/2000px-ADGPI_Indian_Army.svg.png" width="120px" height="100px">
+            </div>
+                <div id='wrap'class="container">
+                    <div class="row justify-content-center">
+                        <div class="col"></div>
+                        <div class="col">
+                            <div class="md-form">
+                                <input type="number" style='color: white;'min="1" id="ID" class="id form-control">
+                                <label for="ID">ID</label>
+                              </div>
+                         </div>
+                        <div class="col"></div>
+                    </div>
+                    <div class="row justify-content-center">
+                        <div class="col"></div>
+                        <div class="col">
+                            <button type="button" id='addSoldier'class="btn btn-light">Add</button>
+                        </div>
+                        <div class="col"></div>
+                    </div>
+                    <h2 id='show-msg' style="display: none;">Added successfully!</h2>
+                </div>
+        </div>
+    </div>
+    
+  
+   <!-- JQuery -->
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<!-- Bootstrap tooltips -->
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.4/umd/popper.min.js"></script>
+<!-- Bootstrap core JavaScript -->
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
+<!-- MDB core JavaScript -->
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.10.1/js/mdb.min.js"></script>
+<script>
+    $(document).ready(()=>{
+        const socket = io.connect(window.location.host);
+        $('#addSoldier').on('click',(e)=>{
+            let id = $('#ID').val();
+            socket.emit('add-soldier',id);
+        });
+        socket.on('show-added-to-client',data=>{
+            $('#ID').val('');
+            $('#show-msg').fadeIn();
+            setTimeout(()=>{
+                $('#show-msg').fadeOut();
+            },2000);
+        });
+    });
+</script>
+</body>
+</html>

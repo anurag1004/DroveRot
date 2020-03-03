@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>AdminPanel</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel='stylesheet' type='text/css' href='/stylesheets/main.css'>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://unpkg.com/popper.js@1.12.6/dist/umd/popper.js" integrity="sha384-fA23ZRQ3G/J53mElWqVJEGJzU0sTs+SvzG8fXVWP+kJQ1lwFAOkcUOysnlKJC33U" crossorigin="anonymous"></script>
+    
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.10.1/css/all.css">
+    <link rel="stylesheet" href="https://unpkg.com/bootstrap-material-design@4.1.1/dist/css/bootstrap-material-design.min.css" integrity="sha384-wXznGJNEXNG1NFsbm0ugrLFMQPWswR3lds2VeinahP8N0zJw9VWSopbjv2x7WCvX" crossorigin="anonymous">
+    <script src="https://unpkg.com/bootstrap-material-design@4.1.1/dist/js/bootstrap-material-design.js" integrity="sha384-CauSuKpEqAFajSpkdjv3z9t8E7RlpJ1UP0lKM/+NdtSarroVKu069AlsRPKkFBz9" crossorigin="anonymous"></script>
+</head>
+    <body>
+        <ul class="nav nav-tabs fixed-top bg-dark">
+            <%if(currentUser){%>
+                   <li class="nav-item">
+                       <a class="nav-link active" href="#">Active</a>
+                     </li>
+               <li class="nav-item">
+                 <a class="nav-link" href="/logout">LogOut</a>
+               </li>
+               <%}else{%>
+                   <li class="nav-item">
+                       <a class="nav-link" href="/login">Login</a>
+                     </li>
+                   <li class="nav-item">
+                      <a class="nav-link" href="/register">Register</a>
+                 </li>
+               <%}%>
+           </ul>
+    <div class="container mt-3">
+ 
+         <h1>Admin Registration</h1>
+       
+        <form class='form-group'action="/register" method="POST">
+            <input type="email" name='email' id='emailId' placeholder="Email" required>
+            <input type="number"  minlength="10" maxlength="10" name='phone_number' id='phoneId' placeholder="+91" required>
+            <input type="username" name='username' id='user' placeholder="Username" required>
+            <input type="password" name="password" id='PWD' placeholder="Password" required>
+            <button class="btn btn-primary mb-2" type="submit">Register</button>
+        </form>
+        
+    </div>
+    <div class="positions"></div>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+     <script src="https://unpkg.com/bootstrap-material-design@4.1.1/dist/js/bootstrap-material-design.js" integrity="sha384-CauSuKpEqAFajSpkdjv3z9t8E7RlpJ1UP0lKM/+NdtSarroVKu069AlsRPKkFBz9" crossorigin="anonymous"></script>
+    <script>$(document).ready(function() { $('body').bootstrapMaterialDesign(); });</script>
+</body>
+</html>

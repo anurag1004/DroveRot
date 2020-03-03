@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Rover</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" type="text/css" href="/stylesheets/main_2.css">
+    <!--socket.io-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.1/socket.io.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://unpkg.com/popper.js@1.12.6/dist/umd/popper.js" integrity="sha384-fA23ZRQ3G/J53mElWqVJEGJzU0sTs+SvzG8fXVWP+kJQ1lwFAOkcUOysnlKJC33U" crossorigin="anonymous"></script>
+    <script type='text/javascript'src='/js/rover.js'></script>
+    <!-- Font Awesome -->
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
+<!-- Bootstrap core CSS -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+<!-- Material Design Bootstrap -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.10.1/css/mdb.min.css" rel="stylesheet">
+</head>
+    <body>
+        <ul class="nav nav-tabs fixed-top bg-dark">
+            <%if(currentUser){%>
+                   <li class="nav-item">
+                    <a class="nav-link active" href="/">Admin Panel</a>
+                     </li>
+               <li class="nav-item">
+                 <a class="nav-link" href="/logout">LogOut</a>
+               </li>
+               <%}else{%>
+                   <li class="nav-item">
+                       <a class="nav-link" href="/login">Login</a>
+                     </li>
+                   <li class="nav-item">
+                      <a class="nav-link" href="/register">Register</a>
+                 </li>
+               <%}%>
+           </ul>
+        <div class="container mt-5">
+            <div class="heading">
+                <h1 class="px-3">Rover Control</h1>
+                <button type="button" id='terminate'class="btn btn-danger">TERMINATE</button>
+                <button type="button" id='self_distruct'class="btn btn-warning">Self-distruct</button>
+                <h3 id='msg' style="display: none;">success!</h3>
+            </div>
+            <div class="wrapper">
+                <div class="row justify-content-center">
+                    <div class="col"></div>
+                    <div class="col-xs-12">
+                        <button class="btn btn-light" id='manualstop'>STOP MANUAL</button>
+                    </div>
+                    <div class="col"></div>
+                </div>
+            <div class="row justify-content-center">
+                <div id='redefine1'class="col"></div>
+                <div class="col-xs-12">
+                    <div class="controls">
+                        <div class="row">
+                            <div id='fl_wrap'class="col">
+                                <button type="button" id='fl'class="btn btn-primary">FL</button>
+                            </div>
+                            <div class="col">
+                                <button type="button" id='f'class="btn btn-primary">Forward</button>
+                            </div>
+                            <div id='fr_wrap'class="col">
+                                <button type="button" id='fr'class="btn btn-primary">FR</button>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                            </div>
+                            <div class="col">
+                                <button type="button" id='stop'class="btn btn-danger">Stop</button>
+                            </div>
+                            <div class="col">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div id='bl_wrap'class="col">
+                                <button type="button" id='bl'class="btn btn-primary">BL</button>
+                            </div>
+                            <div class="col">
+                                <button type="button" id='b'class="btn btn-primary">Back</button>
+                            </div>
+                            <div id='br_wrap'class="col">
+                                <button type="button" id='br'class="btn btn-primary">BR</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id='redefine2'class="col"></div>
+            </div>
+            <div class="row justify-content-center">
+                <div class="col"></div>
+                <div class="col-xs-12">
+                    <button id='automode'class="btn btn-light">Enable Auto</button>
+                </div>
+                <div class="col"></div>
+            </div>
+            </div>
+        </div>
+    </div>
+   <!-- JQuery -->
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<!-- Bootstrap tooltips -->
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.4/umd/popper.min.js"></script>
+<!-- Bootstrap core JavaScript -->
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
+<!-- MDB core JavaScript -->
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.10.1/js/mdb.min.js"></script>
+<script>
+    $(document).ready(()=>{
+        const socket = io.connect(window.location.host);
+        $('.controls .btn').prop('disabled',true);
+        $('#manualstop').prop('disabled',true);
+        let status = false;
+        let char;
+        $('#automode').on('click',e=>{
+            if(!status){
+                char='x'; //enable auto mode
+                setTimeout(()=>{
+                   // $('.controls .btn').prop('disabled',false);
+                    $('#automode').text('Disable Auto');
+                   // $('#manualstop').prop('disabled',false);
+                    //$('#automode').prop('disabled',true);
+                },3000);
+            }
+            else{
+                char='w'; //stop auto mode
+                setTimeout(()=>{
+                    $('.controls .btn').prop('disabled',false);
+                    $('#automode').text('Enable Auto');
+                    $('#manualstop').prop('disabled',false);
+                    $('#automode').prop('disabled',true);
+                },3000);
+            }
+            socket.emit('rover-operation',char);
+            //socket.emit('stop-automode',char);
+            status=!status;
+        });
+        $('#manualstop').on('click',e =>{
+            socket.emit('rover-operation','y');
+            //socket.emit('stop-manualmode','y');
+            setTimeout(()=>{
+                $('.controls .btn').prop('disabled',true);
+                $('#manualstop').prop('disabled',true);
+                $('#automode').prop('disabled',false);
+
+            },2000);
+        });
+    })
+</script>
+</body>
+</html>

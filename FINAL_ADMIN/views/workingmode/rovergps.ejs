@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>Change a map's style</title>
+<meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.1/socket.io.js"></script>
+
+<script src='https://code.jquery.com/jquery-3.4.1.min.js'></script>
+
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+<script src="https://api.mapbox.com/mapbox-gl-js/v1.6.1/mapbox-gl.js"></script>
+<link href="https://api.mapbox.com/mapbox-gl-js/v1.6.1/mapbox-gl.css" rel="stylesheet" />
+<style>
+	body { margin: 0; padding: 0; }
+	#map { position: absolute; top: 0; bottom: 0; width: 100%; }
+</style>
+</head>
+<body>
+<style>
+#menu {
+position: absolute;
+background: #fff;
+padding: 10px;
+font-family: 'Open Sans', sans-serif;
+}
+</style>
+ <style type="text/css">
+    #info {
+    display: block;
+    position: relative;
+    margin: 0px auto;
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 3px;
+    font-size: 20px;
+    text-align: center;
+    color: rgb(255, 255, 255);
+    background: rgba(0, 0, 0, 0.37);
+    }
+    </style>
+<div id="map"></div>
+<div id="info">
+</div>
+<div id="menu">
+<input
+id="streets-v11"
+type="radio"
+name="rtoggle"
+value="streets"
+checked="checked"
+/>
+<label for="streets">streets</label>
+<input id="light-v10" type="radio" name="rtoggle" value="light" />
+<label for="light">light</label>
+<input id="dark-v10" type="radio" name="rtoggle" value="dark" />
+<label for="dark">dark</label>
+<input id="outdoors-v11" type="radio" name="rtoggle" value="outdoors" />
+<label for="outdoors">outdoors</label>
+<input id="satellite-v9" type="radio" name="rtoggle" value="satellite" />
+<label for="satellite">satellite</label>
+<button id='send_btn'class="btn btn-primary">SEND</button>
+
+</div>
+
+<script>
+	mapboxgl.accessToken = 'pk.eyJ1IjoiYW51cmFnMTAyMCIsImEiOiJjazVzZWtoNWcwMW9jM2xsN2I0MXE5bjB0In0.n75kyNP5f_HLsZhrEgflww';
+var map = new mapboxgl.Map({
+container: 'map',
+style: 'mapbox://styles/mapbox/streets-v11',
+zoom: 13,
+center: [4.899, 52.372]
+});
+map.addControl(
+new mapboxgl.GeolocateControl({
+positionOptions: {
+enableHighAccuracy: true
+},
+trackUserLocation: true
+})
+);
+var layerList = document.getElementById('menu');
+var inputs = layerList.getElementsByTagName('input');
+map.on('click', function(e) {
+document.getElementById('info').innerHTML ='Lng: '+e.lngLat.lng+' Lat: '+e.lngLat.lat;
+try{
+    localStorage.removeItem('lat');
+    localStorage.removeItem('lon');
+}catch{
+    //
+}
+localStorage.setItem('lat',e.lngLat.lat);
+localStorage.setItem('lon',e.lngLat.lng);
+// e.point is the x, y coordinates of the mousemove event relative
+// to the top-left corner of the map
+console.log(JSON.stringify(e.point) + JSON.stringify(e.lngLat.wrap()))
+try {
+    map.removeLayer('points');
+    var mpSource = map.getSource("points");
+        if (typeof mpSource === 'undefined') {
+            //alert("no source");
+        } else {
+            map.removeSource("points");
+        }   
+}
+    catch(err) {
+//        alert("Error!");
+    }
+//console.log(e.lngLat.lng);
+map.addLayer({
+'id': 'points',
+'type': 'symbol',
+'source': {
+'type': 'geojson',
+'data': {
+'type': 'FeatureCollection',
+'features': [
+{
+'type': 'Feature',
+'geometry': {
+'type': 'Point',
+'coordinates': [e.lngLat.lng,e.lngLat.lat]
+}
+}
+]
+}
+},
+'layout': {
+'icon-image': 'pulsing-dot'
+}
+});
+
+
+// JSON.stringify(e.point) +
+// '<br />' +
+// e.lngLat is the longitude, latitude geographical position of the event
+// JSON.stringify(e.lngLat.wrap());
+});
+function switchLayer(layer) {
+var layerId = layer.target.id;
+map.setStyle('mapbox://styles/mapbox/' + layerId);
+}
+ 
+for (var i = 0; i < inputs.length; i++) {
+inputs[i].onclick = switchLayer;
+}
+
+
+var size = 200;
+ 
+// implementation of CustomLayerInterface to draw a pulsing dot icon on the map
+// see https://docs.mapbox.com/mapbox-gl-js/api/#customlayerinterface for more info
+var pulsingDot = {
+width: size,
+height: size,
+data: new Uint8Array(size * size * 4),
+ 
+// get rendering context for the map canvas when layer is added to the map
+onAdd: function() {
+var canvas = document.createElement('canvas');
+canvas.width = this.width;
+canvas.height = this.height;
+this.context = canvas.getContext('2d');
+},
+ 
+// called once before every frame where the icon will be used
+render: function() {
+var duration = 1000;
+var t = (performance.now() % duration) / duration;
+ 
+var radius = (size / 2) * 0.3;
+var outerRadius = (size / 2) * 0.7 * t + radius;
+var context = this.context;
+ 
+// draw outer circle
+context.clearRect(0, 0, this.width, this.height);
+context.beginPath();
+context.arc(
+this.width / 2,
+this.height / 2,
+outerRadius,
+0,
+Math.PI * 2
+);
+context.fillStyle = 'rgba(255, 200, 200,' + (1 - t) + ')';
+context.fill();
+ 
+// draw inner circle
+context.beginPath();
+context.arc(
+this.width / 2,
+this.height / 2,
+radius,
+0,
+Math.PI * 2
+);
+context.fillStyle = 'rgba(255, 100, 100, 1)';
+context.strokeStyle = 'white';
+context.lineWidth = 2 + 4 * (1 - t);
+context.fill();
+context.stroke();
+ 
+// update this image's data with data from the canvas
+this.data = context.getImageData(
+0,
+0,
+this.width,
+this.height
+).data;
+ 
+// continuously repaint the map, resulting in the smooth animation of the dot
+map.triggerRepaint();
+ 
+// return `true` to let the map know that the image was updated
+return true;
+}
+};
+ 
+map.on('load', function() {
+map.addImage('pulsing-dot', pulsingDot, { pixelRatio: 2 });
+ 
+// map.addLayer({
+// 'id': 'points',
+// 'type': 'symbol',
+// 'source': {
+// 'type': 'geojson',
+// 'data': {
+// 'type': 'FeatureCollection',
+// 'features': [
+// {
+// 'type': 'Feature',
+// 'geometry': {
+// 'type': 'Point',
+// 'coordinates': [177.587,13.128]
+// }
+// }
+// ]
+// }
+// },
+// 'layout': {
+// 'icon-image': 'pulsing-dot'
+// }
+// });
+});
+
+</script>
+<script>
+    $(document).ready(()=>{
+        const socket = io.connect(window.location.host);
+
+        $('#send_btn').on('click',()=>{
+           // console.log({lat:localStorage.getItem('lat'),lon:localStorage.getItem('lon')});
+            socket.emit('gps',{lat:localStorage.getItem('lat'),lon:localStorage.getItem('lon')});
+        })
+    })
+</script>
+ <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+ <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+ <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+</body>
+</html>
