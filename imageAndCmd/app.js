@@ -16,7 +16,7 @@ storage = multer.diskStorage({
 });
 
 const upload = multer({ storage: storage });
-mongoose.connect('mongodb+srv://AxDU:152452Anurag@@cluster0-nhs71.mongodb.net/DroveRot?retryWrites=true&w=majority&family=4',{
+mongoose.connect('mongodb+srv://Username:PWD@cluster0-nhs71.mongodb.net/DroveRot?retryWrites=true&w=majority&family=4',{
    useNewUrlParser: true,
    useFindAndModify: false,
    useCreateIndex: true,
